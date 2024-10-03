@@ -1,0 +1,53 @@
+body {
+    background: linear-gradient(to bottom right, #d64848, #454bed, #7b7be5, #a1c1ff, #ffffff);
+    color: #f09797;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Структура в колонку */
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 3rem; /* Размер заголовка */
+    margin: 0;
+    color: linear-gradient(to bottom right, #45ed6c), #171616;
+}
+
+p {
+    font-size: 1.5rem;
+    color: white;
+    margin: 10px 0 0 0; /* Отступ для параграфа */
+}
+
+a {
+    color: #fded8d; /* Цвет для ссылки */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+a:hover {
+    text-decoration: underline; /* Подчеркивание при наведении */
+}
+
+.pipeline-status {
+    margin-top: 5px; /* Отступ для статуса пайплайна */
+}
+
+.generate-button {
+    margin-top: 20px; /* Отступ сверху для кнопки */
+    padding: 15px 30px; /* Паддинг для кнопки */
+    font-size: 1.5rem; /* Размер текста на кнопке */
+    border: none; /* Убираем рамку */
+    border-radius: 5px; /* Закругленные углы */
+    cursor: pointer; /* Указатель при наведении */
+    background: linear-gradient(135deg, #a8e063, #56ab2f, #a8e063); /* Тройной градиент */
+    color: white; /* Цвет текста */
+    transition: background 0.3s; /* Плавный переход фона */
+}
+
+.generate-button:hover {
+    background: linear-gradient(135deg, #56ab2f, #a8e063, #56ab2f); /* Изменение градиента при наведении */
+}

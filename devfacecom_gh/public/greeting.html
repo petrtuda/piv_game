@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Привет!</title>
+    <style>
+        body {
+            background-color: #171616; /* Фон страницы */
+            color: white; /* Цвет текста */
+            display: flex;
+            flex-direction: column; /* Вертикальное выравнивание */
+            justify-content: center; /* Выравнивание по центру */
+            align-items: center; /* Горизонтальное выравнивание */
+            height: 100vh; /* Высота страницы */
+            margin: 0; /* Убираем отступы */
+            font-family: Arial, sans-serif; /* Шрифт */
+        }
+
+        h1 {
+            font-size: 3rem; /* Размер заголовка */
+            margin-bottom: 20px; /* Отступ снизу */
+        }
+
+        /* Стиль для прогресс-бара */
+        #progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #444; /* Цвет фона прогресс-бара */
+            position: relative; /* Относительное позиционирование */
+            overflow: hidden; /* Скрываем выходящие за пределы элементы */
+            border-radius: 5px; /* Закругление углов */
+            display: none; /* Скрываем прогресс-бар изначально */
+            margin-top: 20px; /* Отступ сверху */
+        }
+
+        #progress {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(to right, #4caf50, #3e9eff, #cddc39); /* Градиент цвета */
+            transition: width 0.1s; /* Плавный переход */
+        }
+
+        /* Стиль для выпадающего списка и кнопки */
+        #beer-selection, #submit-button {
+            margin-top: 22px; /* Отступ сверху */
+            display: none; /* Скрываем изначально */
+            font-size: 1.4rem; /* Размер шрифта */
+            background-color: #333; /* Цвет фона */
+            color: white; /* Цвет текста */
+            border: none; /* Убираем рамку */
+            padding: 15px; /* Отступы внутри */
+            border-radius: 8px; /* Закругление углов */
+            cursor: pointer; /* Курсор-указатель для кнопки */
+        }
+
+        /* Дополнительный стиль для кнопки */
+        #submit-button {
+            display: inline-block; /* Вывод кнопки рядом с выпадающим списком */
+        }
+    </style>
+</head>
+<body>
+    <h1>Привет, <span id="username"></span>!</h1>
+    
+    <!-- Прогресс-бар -->
+    <div id="progress-bar">
+        <div id="progress"></div>
+    </div>
+
+    <!-- Вопрос о пиве и выпадающий список -->
+    <div id="beer-question" style="display: none; text-align: center;">
+        <label for="beer-selection">Сколько пив?</label>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <select id="beer-selection" style="margin-right: 10px;"> <!-- Add margin for spacing -->
+                <option value="0">0</option>
+                <option value="1-2">1-2</option>
+                <option value="2-4">2-4</option>
+                <option value="5+">5+</option>
+            </select>
+            <button id="submit-button">Отправить в firebase</button>
+        </div>
+    </div>
+
+    <script>
+        // Получаем имя пользователя из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        document.getElementById('username').textContent = username;
+
+        // Функция для запуска прогресс-бара
+        function startLoader() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            const beerQuestion = document.getElementById('beer-question');
+            const beerSelection = document.getElementById('beer-selection');
+            const submitButton = document.getElementById('submit-button');
+            progressBar.style.display = 'block'; // Показываем прогресс-бар
+
+            let width = 0; // Начальная ширина
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval); // Останавливаем, если достигли 100%
+                    setTimeout(() => {
+                        // Показываем уведомление и выпадающий список
+                        beerQuestion.style.display = 'block';
+                        beerSelection.style.display = 'block';
+                        submitButton.style.display = 'inline-block'; // Показываем кнопку
+                    }, 500); // Уведомление через полсекунды
+                } else {
+                    width++; // Увеличиваем ширину
+                    progress.style.width = width + '%'; // Устанавливаем новую ширину
+                }
+            }, 50); // Интервал обновления (можно настроить)
+        }
+
+        // Запускаем прогресс-бар через 3 секунды
+        setTimeout(startLoader, 3000);
+
+    // Обработчик нажатия на кнопку "Отправить на сервер"
+    document.getElementById('submit-button').addEventListener('click', () => {
+        const beerCount = document.getElementById('beer-selection').value;
+        const data = {
+            username: username,
+            beerCount: beerCount
+        };
+
+        // Отправка данных на сервер
+        fetch('results.csv', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Данные успешно отправлены на сервер!');
+
+                // Сохраняем данные в локальном хранилище
+                localStorage.setItem('userData', JSON.stringify(data));
+
+                // Перенаправляем на новую страницу
+                window.location.href = 'firebasePage.html';
+            } else {
+                alert('Ошибка при отправке данных на сервер.');
+            }
+        })
+        .catch(error => {
+            alert('Ошибка при отправке данных на сервер: ' + error.message);
+        });
+    });
+    </script>
+
+    <script src="https://fire-17bc8-default-rtdb.europe-west1.firebasedatabase.app/"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    
+</body>
+</html>

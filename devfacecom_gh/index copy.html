@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi!</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #171616, #454bed);
+            color: white;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column; /* Структура в колонку */
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 3rem; /* Размер заголовка */
+            margin: 0;
+            color: #d4ffe5;
+        }
+
+        p {
+            font-size: 1.5rem;
+            color: white;
+            margin: 10px 0 0 0; /* Отступ для параграфа */
+        }
+
+        a {
+            color: #fded8d; /* Цвет для ссылки */
+            text-decoration: none; /* Убираем подчеркивание */
+        }
+
+        a:hover {
+            text-decoration: underline; /* Подчеркивание при наведении */
+        }
+
+        .pipeline-status {
+            margin-top: 5px; /* Отступ для статуса пайплайна */
+        }
+
+        .generate-button {
+            margin-top: 20px; /* Отступ сверху для кнопки */
+            padding: 15px 30px; /* Паддинг для кнопки */
+            font-size: 1.5rem; /* Размер текста на кнопке */
+            border: none; /* Убираем рамку */
+            border-radius: 5px; /* Закругленные углы */
+            cursor: pointer; /* Указатель при наведении */
+            background: linear-gradient(135deg, #a8e063, #56ab2f, #a8e063); /* Тройной градиент */
+            color: white; /* Цвет текста */
+            transition: background 0.3s; /* Плавный переход фона */
+        }
+
+        .generate-button:hover {
+            background: linear-gradient(135deg, #56ab2f, #a8e063, #56ab2f); /* Изменение градиента при наведении */
+        }
+    </style>
+    <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
+    <script>
+        function onClick(e) {
+        e.preventDefault();
+        grecaptcha.ready(function() {
+            grecaptcha.execute('reCAPTCHA_site_key', {action: 'submit'}).then(function(token) {
+                // Add your logic to submit to your backend server here.
+            });
+        });
+        }
+    </script>
+    <script>
+        function generateUsername() {
+            // Список возможных символов для генерации юзернейма
+            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let username = '';
+            const length = 8; // Длина юзернейма
+
+            // Генерация случайного юзернейма
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                username += characters.charAt(randomIndex);
+            }
+
+            // Вывод юзернейма в окне уведомления
+            alert(`Сгенерированный юзернейм: ${username}`);
+
+            // Окно ввода для пользователя
+            const userInput = prompt("Введите свой юзернейм или оставьте предложенный:");
+            const finalUsername = userInput ? userInput : username; // Выбор юзернейма
+
+            // Открытие новой страницы с приветствием
+            window.location.href = `greeting.html?username=${encodeURIComponent(finalUsername)}`;
+        }
+    </script>
+
+</head>
+<body>
+    <h1>Generate a Temporary Username</h1>
+    <p>Смотри мои пайпы:</p>
+    <a class="pipeline-status" href="https://gitlab.com/tuda9662139/devfacecom/-/commits/main">
+        <img alt="pipeline status" src="https://gitlab.com/tuda9662139/devfacecom/badges/main/pipeline.svg" />
+    </a>
+    <button class="g-recaptcha" 
+        data-sitekey="reCAPTCHA_site_key" 
+        data-callback='onSubmit' 
+        data-action='submit'>Submit</button>
+    <button class="generate-button" onclick="generateUsername()">Generate username</button> <!-- Кнопка Generate с вызовом функции -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyCsXNQnYVZbdGaxC62Z1nRvAIFHaMBwvXY",
+          authDomain: "fire-17bc8.firebaseapp.com",
+          projectId: "fire-17bc8",
+          storageBucket: "fire-17bc8.appspot.com",
+          messagingSenderId: "776586080642",
+          appId: "1:776586080642:web:a2a98085bf431f1e5d5f9b",
+          measurementId: "G-9TWMTLS8K7"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
+</body>
+</html>

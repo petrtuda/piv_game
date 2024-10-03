@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Взаимодействие с Gemini</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Если есть стили -->
+    <style>
+        /* Основные стили для страницы */
+        body {
+            background: linear-gradient(to right, #1a1a1a, #333, #1a1a1a); /* Тройной градиент */
+            color: white; /* Цвет текста белый */
+            font-family: Arial, sans-serif; /* Шрифт */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            margin: 20px 0;
+        }
+
+        /* Стили для списков */
+        #task-list {
+            list-style-type: none; /* Убираем стандартные маркеры списка */
+            padding: 0;
+        }
+
+        #task-list li {
+            background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон для задач */
+            margin: 5px 0; /* Отступы между задачами */
+            padding: 10px; /* Внутренние отступы */
+            border-radius: 5px; /* Закругленные углы */
+        }
+
+        /* Стили для кнопок */
+        button {
+            background-color: #444; /* Цвет кнопки */
+            color: white; /* Цвет текста на кнопке */
+            border: none; /* Убираем рамку */
+            padding: 10px 20px; /* Внутренние отступы */
+            border-radius: 5px; /* Закругленные углы */
+            cursor: pointer; /* Указатель при наведении */
+            font-size: 16px; /* Размер шрифта */
+        }
+
+        button:hover {
+            background-color: #555; /* Цвет кнопки при наведении */
+        }
+
+        input[type="text"] {
+            padding: 10px; /* Внутренние отступы */
+            border: none; /* Убираем рамку */
+            border-radius: 5px; /* Закругленные углы */
+            margin-top: 10px; /* Отступ сверху */
+            width: calc(100% - 22px); /* Ширина поля ввода */
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Информация о пользователе -->
+    <div id="user-info">
+        <h2>You:</h2> <p id="username-output"></p>
+    </div>
+
+    <!-- Ответ пользователя на опрос -->
+    <div id="survey-response">
+        <h2>Hm, ((( or )))?</h2><p id="beer-count-output"></p>
+    </div>
+
+    <h2>))))</h2>
+    <h1>Взаимодействие с Gemini</h1>
+
+    <!-- Вывод задач -->
+    <div id="task-output">
+        <h2>Сгенерированные задачи:</h2>
+        <ul id="task-list"></ul>
+    </div>
+
+    <input type="text" id="user-input" placeholder="Введите новую задачу...">
+    <button id="generate-task">Сгенерировать задачу</button>
+
+    <script>
+        // Извлечение данных пользователя из Local Storage
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (userData) {
+            document.getElementById('username-output').innerText = `Пользователь: ${userData.username}`;
+        } else {
+            document.getElementById('username-output').innerText = 'Пользователь не найден';
+        }
+
+        // Извлечение ответа пользователя на опрос из Local Storage
+        const surveyData = JSON.parse(localStorage.getItem('userData'));
+        if (surveyData && surveyData.beerCount) {
+            const beerCount = surveyData.beerCount;
+            const brackets = beerCount > 2 ? '(((((' : '))))'; // Определение скобок
+            document.getElementById('beer-count-output').innerText = `Количество пива: ${beerCount} ${brackets}`;
+        } else {
+            document.getElementById('beer-count-output').innerText = 'Ответ на опрос не найден';
+        }
+
+        // Загрузка задач из Local Storage
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const taskList = document.getElementById('task-list');
+        tasks.forEach(task => {
+            const listItem = document.createElement('li');
+            listItem.innerText = task;
+            taskList.appendChild(listItem);
+        });
+
+        // Генерация новой задачи через Gemini API
+        document.getElementById('generate-task').addEventListener('click', function() {
+            const userInput = document.getElementById('user-input').value;
+
+            // Вызов Gemini API
+            fetch('YOUR_GEMINI_API_ENDPOINT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_GEMINI_API_KEY'
+                },
+                body: JSON.stringify({ prompt: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const generatedTask = data.generatedTask;
+                const listItem = document.createElement('li');
+                listItem.innerText = generatedTask;
+                taskList.appendChild(listItem);
+
+                // Сохранение задачи в Local Storage
+                tasks.push(generatedTask);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            })
+            .catch(error => console.error('Ошибка:', error));
+        });
+    </script>
+</body>
+</html>

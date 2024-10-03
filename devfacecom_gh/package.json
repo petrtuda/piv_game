@@ -1,0 +1,18 @@
+{
+  "name": "devfacecom",
+  "version": "1.0.0",
+  "description": "[![pipeline status](https://gitlab.com/tuda9662139/devfacecom/badges/main/pipeline.svg)](https://gitlab.com/tuda9662139/devfacecom/-/commits/main)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@firebasegen/default": "file:generated/javascript/default",
+    "express": "^4.21.0",
+    "firebase": "^10.14.0",
+    "firebase-admin": "^12.6.0"
+  }
+}

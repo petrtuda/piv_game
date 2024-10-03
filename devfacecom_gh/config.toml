@@ -1,0 +1,19 @@
+[[runners]]
+  name = "docker-runner"
+  url = "https://gitlab.com/"
+  token = "your_token_here"
+  executor = "docker"
+  [runners.docker]
+    image = "docker:latest"
+    privileged = true
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock"]
+
+    [[runners]]
+  name = "My Docker Runner"
+  url = "https://gitlab.com/"
+  token = "YOUR_REGISTRATION_TOKEN"
+  executor = "docker"
+  [runners.docker]
+    image = "docker:latest"
+    privileged = true # Чтобы включить возможность использования Docker-in-Docker
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock"]

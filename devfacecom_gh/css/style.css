@@ -1,0 +1,29 @@
+/* Основные стили для body */
+body {
+    background: linear-gradient(to bottom, rgb(96, 243, 221), rgb(83, 237, 168)); /* Добавляем градиент */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif; /* Указываем шрифт */
+}
+
+/* Стили для заголовка h1 */
+h1 {
+    font-size: 5rem;
+    margin: 0; /* Убираем отступы */
+}
+
+/* Добавляем стили для ссылок, если они будут на странице */
+a {
+    color: white; /* Цвет ссылки */
+    text-decoration: none; /* Убираем подчеркивание */
+    font-size: 1.5rem; /* Размер шрифта для ссылок */
+}
+
+/* Изменяем цвет ссылки при наведении */
+a:hover {
+    color: gray; /* Цвет при наведении */
+}

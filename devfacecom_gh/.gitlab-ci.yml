@@ -1,0 +1,34 @@
+stages:
+  - check
+  - build
+  - run
+
+check_directories:
+  stage: check
+  image: ubuntu:22.04
+  script:
+    - apt-get update && apt-get install -y bash
+    - chmod +x check_directories.sh
+    - ./check_directories.sh  # Запуск вашего скрипта
+
+build:
+  stage: build
+  image: ubuntu:22.04
+  script:
+    - apt-get update
+    - apt-get install -y g++ libcurl4-openssl-dev nmap  # Установка g++ и curl, а также nmap
+    - nmap --version  # Проверка, что nmap установлен
+    - ls -R .  # Выводим содержимое корневого каталога для отладки
+    - ls Sec_Back  # Выводим содержимое папки Sec_Back для проверки наличия файла
+    - g++ Sec_Back/port_checker.cpp -o port_checker -lcurl -static  # Исправленный путь к файлу
+  artifacts:
+    paths:
+      - port_checker  # Сохранение скомпилированного файла как артефакт
+
+run:
+  stage: run
+  image: ubuntu:22.04  # Используем тот же образ, что и на этапе сборки
+  script:
+    - ./port_checker  # Запуск программы
+  only:
+    - main  # Выполнять этот шаг только на ветке main

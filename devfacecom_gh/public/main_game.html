@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прогресс Бар</title>
+    <link rel="stylesheet" href="css/game_styles.css"> <!-- Подключаем CSS -->
+</head>
+<body>
+
+<div class="frame">
+    <div class="beer-count">Количество пива: <span id="beerCount">5</span> 🍺</div>
+    <div class="dropdown">
+        <select class="dropdown" id="beerSelect" onchange="updateBeerCount()">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <span class="emoji">🍺</span>
+    </div>
+    <button class="play-button" onmouseover="showModal()">Start</button>
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для авторизации -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Авторизация</h2>
+        <label for="username">Введите Username:</label>
+        <input type="text" id="username" placeholder="Введите Username" />
+        <button id="generateUsernameButton">Сгенерировать юзернейм</button>
+        <br>
+        <label for="password">Введите Password:</label>
+        <input type="text" id="password" placeholder="Введите Password" />
+        <button class="generate-button" onclick="generatePassword()">Generate</button>
+        <br>
+        <button class="go-button" onclick="closeModal()">Go</button> 
+    </div>
+</div>
+
+<!-- Подключение внешнего скрипта -->
+<script src="js/script.js" defer></script>
+<script>
+    const token = 'YOUR_GITLAB_ACCESS_TOKEN'; // замените на ваш токен
+    const projectId = 'YOUR_PROJECT_ID'; // замените на ID вашего проекта
+
+    async function fetchPipelineStatus() {
+        const response = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipelines/latest`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            updateProgressBar(data.status);
+        } else {
+            console.error('Ошибка при получении статуса пайплайна:', response.statusText);
+        }
+    }
+
+    function updateProgressBar(status) {
+        const progressBar = document.getElementById('progressBar');
+        let width = 0;
+
+        switch (status) {
+            case 'success':
+                width = 100;
+                progressBar.style.background = '#4caf50';
+                break;
+            case 'failed':
+                width = 0;
+                progressBar.style.background = '#f44336';
+                break;
+            case 'running':
+                width = 50;
+                progressBar.style.background = '#ff9800';
+                break;
+            case 'pending':
+                width = 25;
+                progressBar.style.background = '#2196f3';
+                break;
+            default:
+                width = 0;
+                break;
+        }
+
+        progressBar.style.width = `${width}%`;
+        progressBar.innerText = `${status.charAt(0).toUpperCase() + status.slice(1)}`;
+    }
+
+    fetchPipelineStatus();
+</script>
+</body>
+</html>

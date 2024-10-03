@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статус пайплайна</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .progress-container {
+            width: 100%;
+            background: #f3f3f3;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 30px;
+            background: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>Статус пайплайна</h1>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+
+    <script>
+        const token = 'YOUR_GITLAB_ACCESS_TOKEN'; // замените на ваш токен
+        const projectId = 'YOUR_PROJECT_ID'; // замените на ID вашего проекта
+
+        async function fetchPipelineStatus() {
+            const response = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/pipelines/latest`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                updateProgressBar(data.status);
+            } else {
+                console.error('Ошибка при получении статуса пайплайна:', response.statusText);
+            }
+        }
+
+        function updateProgressBar(status) {
+            const progressBar = document.getElementById('progressBar');
+            let width = 0;
+
+            switch (status) {
+                case 'success':
+                    width = 100;
+                    progressBar.style.background = '#4caf50';
+                    break;
+                case 'failed':
+                    width = 0;
+                    progressBar.style.background = '#f44336';
+                    break;
+                case 'running':
+                    width = 50;
+                    progressBar.style.background = '#ff9800';
+                    break;
+                case 'pending':
+                    width = 25;
+                    progressBar.style.background = '#2196f3';
+                    break;
+                default:
+                    width = 0;
+                    break;
+            }
+
+            progressBar.style.width = `${width}%`;
+            progressBar.innerText = `${status.charAt(0).toUpperCase() + status.slice(1)}`;
+        }
+
+        fetchPipelineStatus();
+    </script>
+</body>
+</html>
